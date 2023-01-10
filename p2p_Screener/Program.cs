@@ -10,6 +10,10 @@ internal class Program
     private static string Token { get; set; } = "5756002034:AAEgi1BjAhT747qZH8xkYcZ-dkRMsCKv-pM";
     private static TelegramBotClient Client { get; set; }
     private static ArbitrageConfig Config { get; set; }
+    public static void Log(string message)
+    {
+        System.IO.File.AppendAllText("log.txt", $"{DateTime.Now}:\t{message}");
+    }
     private static async Task Main(string[] args)
     {
         Client = new TelegramBotClient(Token);
@@ -54,7 +58,7 @@ internal class Program
 
         var me = await Client.GetMeAsync();
 
-        Console.WriteLine($"Start listening for @{me.Username}");
+        Log($"Start listening for @{me.Username}");
         Console.ReadLine();
 
         // Send cancellation request to stop bot
@@ -69,7 +73,7 @@ internal class Program
 
             var chatId = message.Chat.Id;
 
-            Console.WriteLine($"Received a '{messageText}' message in chat {chatId}.");
+            Log($"Received a '{messageText}' message in chat {chatId}.");
 
             if (messageText == "/rates")
             {
@@ -173,7 +177,7 @@ internal class Program
                 _ => exception.ToString()
             };
 
-            Console.WriteLine(ErrorMessage);
+            Log(ErrorMessage);
             return Task.CompletedTask;
         }
     }
